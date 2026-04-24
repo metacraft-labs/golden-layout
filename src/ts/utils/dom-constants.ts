@@ -41,5 +41,6 @@ export namespace DomConstants {
         Bg = 'lm_bg',
         DropTargetIndicator = 'lm_dropTargetIndicator',
         Inner = 'lm_inner',
+        Pin = 'lm_pin',
     }
 }

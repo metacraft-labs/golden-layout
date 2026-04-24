@@ -102,6 +102,7 @@ export namespace ResolvedHeaderedItemConfig {
         readonly close: string | undefined;
         readonly minimise: string | undefined;
         readonly tabDropdown: false | string | undefined;
+        readonly pin: false | string | undefined;
     }
 
     export namespace Header {
@@ -116,6 +117,7 @@ export namespace ResolvedHeaderedItemConfig {
                     maximise: original.maximise,
                     minimise: original.minimise,
                     tabDropdown: original.tabDropdown,
+                    pin: original.pin,
                 }
             }
         }
@@ -503,6 +505,7 @@ export namespace ResolvedLayoutConfig {
         readonly minimise: string;
         readonly close: false | string;
         readonly tabDropdown: false | string;
+        readonly pin: false | string;
     }
 
     export namespace Header {
@@ -515,6 +518,7 @@ export namespace ResolvedLayoutConfig {
                 maximise: original.maximise,
                 minimise: original.minimise,
                 tabDropdown: original.tabDropdown,
+                pin: original.pin,
             }
         }
 
@@ -525,7 +529,8 @@ export namespace ResolvedLayoutConfig {
             maximise: 'maximise',
             minimise: 'minimise',
             close: 'close',
-            tabDropdown: 'additional tabs'
+            tabDropdown: 'additional tabs',
+            pin: false,
         } as const;
     }
 

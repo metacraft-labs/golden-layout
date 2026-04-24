@@ -1085,6 +1085,33 @@ export abstract class LayoutManager extends EventEmitter {
 	dragSource.destroy();
     }
 
+    /**
+     * Emit a dragMove event during an active drag operation.
+     * Applications can use this to show auto-hide zone indicators
+     * when the cursor approaches window edges.
+     *
+     * @public
+     */
+    emitDragMove(x: number, y: number, componentItem: ComponentItem): void {
+        this.emit('dragMove', x, y, componentItem);
+    }
+
+    /**
+     * Emit a dragExternalDrop event when a drag ends outside all GL drop areas.
+     * If any listener returns true, the drop is considered handled and the
+     * component is NOT reverted to its original position or destroyed.
+     *
+     * @returns true if a listener handled the drop
+     * @public
+     */
+    emitDragExternalDrop(componentItem: ComponentItem): boolean {
+        let handled = false;
+        this.emit('dragExternalDrop', componentItem, (claim: boolean) => {
+            if (claim) handled = true;
+        });
+        return handled;
+    }
+
     removeElementEventually(element: HTMLElement): void {
         if (this.currentlyDragging()) {
             element.style.opacity = '0';

@@ -216,6 +216,9 @@ export namespace EventEmitter {
         "stackHeaderClick": ClickBubblingEventParam;
         "stackHeaderTouchStart": TouchStartBubblingEventParam;
         "userBroadcast": UnknownParams;
+        "pin": NoParams;
+        "dragMove": DragMoveParams;
+        "dragExternalDrop": DragExternalDropParams;
     }
 
     export type UnknownParams = unknown[];
@@ -232,6 +235,8 @@ export namespace EventEmitter {
     export type MouseEventParams = [event: MouseEvent];
     export type MouseComponentParams = [event: MouseEvent, component: ComponentItem];
     export type DragMovedParams = [offsetX: number, offsetY: number, component: ComponentItem];
+    export type DragMoveParams = [x: number, y: number, componentItem: ComponentItem];
+    export type DragExternalDropParams = [componentItem: ComponentItem, claim: (handled: boolean) => void];
     export type BeforeComponentReleaseParams = [component: unknown];
     export type ClickBubblingEventParam = [ClickBubblingEvent];
     export type TouchStartBubblingEventParam = [TouchStartBubblingEvent];

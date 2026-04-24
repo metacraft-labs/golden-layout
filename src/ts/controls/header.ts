@@ -45,6 +45,10 @@ export class Header extends EventEmitter {
     private readonly _tabDropdownEnabled: boolean;
     /** @internal */
     private readonly _tabDropdownLabel: string;
+    /** @internal */
+    private readonly _pinEnabled: boolean;
+    /** @internal */
+    private readonly _pinLabel: string;
 
     /** @internal */
     private readonly _tabControlOffset: number;
@@ -72,6 +76,8 @@ export class Header extends EventEmitter {
     private readonly _tabDropdownButton: HeaderButton;
     /** @internal */
     private readonly _maximiseButton: HeaderButton | undefined;
+    /** @internal */
+    private readonly _pinButton: HeaderButton | undefined;
     /** @internal */
     private _updateRequested = 0;
     // /** @internal */
@@ -137,6 +143,8 @@ export class Header extends EventEmitter {
         this._closeLabel = settings.closeLabel;
         this._tabDropdownEnabled = settings.tabDropdownEnabled;
         this._tabDropdownLabel = settings.tabDropdownLabel;
+        this._pinEnabled = settings.pinEnabled;
+        this._pinLabel = settings.pinLabel;
         this.setSide(settings.side);
 
         this._canRemoveComponent = this._configClosable;
@@ -171,6 +179,15 @@ export class Header extends EventEmitter {
         if (this._maximiseEnabled) {
             this._maximiseButton = new HeaderButton(this, this._maximiseLabel, DomConstants.ClassName.Maximise,
                 (ev) => this.handleButtonMaximiseToggleEvent(ev)
+            );
+        }
+
+        /**
+         * Pin button — collapses this stack to an auto-hide edge strip
+         */
+        if (this._pinEnabled) {
+            this._pinButton = new HeaderButton(this, this._pinLabel, DomConstants.ClassName.Pin,
+                () => this._parent.emit('pin')
             );
         }
 
@@ -509,5 +526,7 @@ export namespace Header {
         closeLabel: string;
         tabDropdownEnabled: boolean;
         tabDropdownLabel: string;
+        pinEnabled: boolean;
+        pinLabel: string;
     }
 }

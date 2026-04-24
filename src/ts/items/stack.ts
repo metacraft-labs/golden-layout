@@ -88,6 +88,7 @@ export class Stack extends ComponentParentableItem {
         const close = this._headerConfig?.close ?? componentHeaderConfig?.close ?? layoutHeaderConfig.close;
         const minimise = this._headerConfig?.minimise ?? componentHeaderConfig?.minimise ?? layoutHeaderConfig.minimise;
         const tabDropdown = this._headerConfig?.tabDropdown ?? componentHeaderConfig?.tabDropdown ?? layoutHeaderConfig.tabDropdown;
+        const pin = this._headerConfig?.pin ?? componentHeaderConfig?.pin ?? layoutHeaderConfig.pin;
         this._maximisedEnabled = maximise !== false;
         const headerSettings: Header.Settings = {
             show: show !== false,
@@ -102,6 +103,8 @@ export class Stack extends ComponentParentableItem {
             minimiseLabel: minimise,
             tabDropdownEnabled: tabDropdown !== false,
             tabDropdownLabel: tabDropdown === false ? '' : tabDropdown,
+            pinEnabled: pin !== false,
+            pinLabel: pin === false ? '' : pin,
         };
 
         this._header = new Header(layoutManager,
@@ -320,6 +323,30 @@ export class Stack extends ComponentParentableItem {
         }
 
         this.emitStateChangedEvent();
+    }
+
+    /**
+     * Detach a child component from this stack without destroying it.
+     * The component's DOM element survives and can be reparented elsewhere
+     * (e.g., into an auto-hide overlay). Call {@link attachChild} to restore.
+     *
+     * @public
+     */
+    detachChild(componentItem: ComponentItem): Stack.DetachedComponent {
+        const config = componentItem.toConfig();
+        const element = componentItem.element;
+        this.removeChild(componentItem, true);
+        return { componentItem, config, element };
+    }
+
+    /**
+     * Re-attach a previously detached component to this stack.
+     * Restores the component into the layout tree with its DOM state intact.
+     *
+     * @public
+     */
+    attachChild(detached: Stack.DetachedComponent, index?: number): void {
+        this.addChild(detached.componentItem, index, true);
     }
 
     /**
@@ -913,6 +940,7 @@ export class Stack extends ComponentParentableItem {
                     close: undefined,
                     minimise: undefined,
                     tabDropdown: undefined,
+                    pin: undefined,
                 };
             }
             return result;
@@ -927,6 +955,13 @@ export class Stack extends ComponentParentableItem {
 
 /** @public */
 export namespace Stack {
+    /** A component detached from the layout tree but kept alive for reattachment. */
+    export interface DetachedComponent {
+        readonly componentItem: ComponentItem;
+        readonly config: ResolvedComponentItemConfig;
+        readonly element: HTMLElement;
+    }
+
     /** @internal */
     export const enum Segment {
         Header = 'header',

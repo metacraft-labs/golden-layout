@@ -121,6 +121,8 @@ export class DragProxy extends EventEmitter {
 
         this.setDropPosition(x, y);
         this._componentItem.drag();
+
+        this._layoutManager.emitDragMove(x, y, this._componentItem);
     }
 
     /**
@@ -190,10 +192,14 @@ export class DragProxy extends EventEmitter {
             newParentContentItem.onDrop(droppedComponentItem, this._lastValidArea);
 
             /**
-             * No valid drop area found during the duration of the drag. Return
-             * content item to its original position if a original parent is provided.
-             * (Which is not the case if the drag had been initiated by createDragSource)
+             * No valid drop area found during the duration of the drag.
+             * Give the application a chance to handle the drop (e.g., auto-hide
+             * to an edge strip). If not handled, revert to original position
+             * or destroy the component.
              */
+        } else if (this._layoutManager.emitDragExternalDrop(this._componentItem)) {
+            droppedComponentItem = this._componentItem;
+
         } else if (this._originalParent) {
             droppedComponentItem = this._componentItem;
             this._originalParent.addChild(droppedComponentItem);

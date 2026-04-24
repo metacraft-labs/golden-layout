@@ -257,6 +257,7 @@ export namespace HeaderedItemConfig {
         close?: string;
         minimise?: string;
         tabDropdown?: false | string;
+        pin?: false | string;
     }
 
     export namespace Header {
@@ -271,6 +272,7 @@ export namespace HeaderedItemConfig {
                     close: header?.close,
                     minimise: header?.minimise,
                     tabDropdown: header?.tabDropdown,
+                    pin: header?.pin,
                 }
                 return result;
             }
@@ -1046,6 +1048,12 @@ export namespace LayoutConfig {
          * Default: 'additional tabs'
          */
         tabDropdown?: false | string;
+        /**
+         * The tooltip text that appears when hovering over the pin icon,
+         * or false if the pin button should not be displayed.
+         * Default: false (disabled)
+         */
+        pin?: false | string;
     }
 
     export namespace Header {
@@ -1074,6 +1082,7 @@ export namespace LayoutConfig {
                     (settings?.showCloseIcon === false ? false : ResolvedLayoutConfig.Header.defaults.close),
                 minimise: header?.minimise ?? labels?.minimise ?? ResolvedLayoutConfig.Header.defaults.minimise,
                 tabDropdown: header?.tabDropdown ?? labels?.tabDropdown ?? ResolvedLayoutConfig.Header.defaults.tabDropdown,
+                pin: header?.pin ?? ResolvedLayoutConfig.Header.defaults.pin,
             }
             return result;
         }
