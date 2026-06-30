@@ -483,7 +483,11 @@ export namespace EventEmitter {
     // (undocumented)
     export type ComponentItemParam = [ComponentItem];
     // (undocumented)
+    export type DragExternalDropParams = [componentItem: ComponentItem, claim: (handled: boolean) => void];
+    // (undocumented)
     export type DragMovedParams = [offsetX: number, offsetY: number, component: ComponentItem];
+    // (undocumented)
+    export type DragMoveParams = [x: number, y: number, componentItem: ComponentItem];
     // (undocumented)
     export type DragParams = [offsetX: number, offsetY: number, event: PointerEvent];
     // (undocumented)
@@ -519,6 +523,10 @@ export namespace EventEmitter {
         // (undocumented)
         "dragExported": DragMovedParams;
         // (undocumented)
+        "dragExternalDrop": DragExternalDropParams;
+        // (undocumented)
+        "dragMove": DragMoveParams;
+        // (undocumented)
         "dragMoved": DragMovedParams;
         // (undocumented)
         "dragStart": DragStartParams;
@@ -546,6 +554,8 @@ export namespace EventEmitter {
         "minimised": NoParams;
         // (undocumented)
         "open": NoParams;
+        // (undocumented)
+        "pin": NoParams;
         // (undocumented)
         "popIn": NoParams;
         // (undocumented)
@@ -776,6 +786,10 @@ export namespace Header {
         // (undocumented)
         minimiseLabel: string;
         // (undocumented)
+        pinEnabled: boolean;
+        // (undocumented)
+        pinLabel: string;
+        // (undocumented)
         popoutEnabled: boolean;
         // (undocumented)
         popoutLabel: string;
@@ -816,6 +830,8 @@ export namespace HeaderedItemConfig {
         maximise?: false | string;
         // (undocumented)
         minimise?: string;
+        // (undocumented)
+        pin?: false | string;
         // (undocumented)
         popout?: false | string;
         // (undocumented)
@@ -1015,6 +1031,7 @@ export namespace LayoutConfig {
         close?: false | string;
         maximise?: false | string;
         minimise?: string;
+        pin?: false | string;
         popin?: string;
         popout?: false | string;
         show?: false | Side;
@@ -1149,6 +1166,8 @@ export abstract class LayoutManager extends EventEmitter {
     //
     // @internal (undocumented)
     get dropTargetIndicator(): DropTargetIndicator | null;
+    emitDragExternalDrop(componentItem: ComponentItem): boolean;
+    emitDragMove(x: number, y: number, componentItem: ComponentItem): void;
     // @internal (undocumented)
     endResizing(): void;
     // (undocumented)
@@ -1219,7 +1238,7 @@ export abstract class LayoutManager extends EventEmitter {
     setMaximisedStack(stack: Stack | undefined): void;
     setSize(width: number, height: number): void;
     // @internal (undocumented)
-    setTransferData(ev: DragEvent, componentItem: ComponentItem): void;
+    setTransferData(ev: DragEvent, componentItem: ComponentItem, config?: ResolvedComponentItemConfig): void;
     // @internal (undocumented)
     startComponentDrag(ev: DragEvent, componentItem: ComponentItem): void;
     // @internal (undocumented)
@@ -1478,6 +1497,8 @@ export namespace ResolvedHeaderedItemConfig {
         // (undocumented)
         readonly minimise: string | undefined;
         // (undocumented)
+        readonly pin: false | string | undefined;
+        // (undocumented)
         readonly popout: false | string | undefined;
         // (undocumented)
         readonly show: false | Side | undefined;
@@ -1590,6 +1611,8 @@ export namespace ResolvedLayoutConfig {
         readonly maximise: false | string;
         // (undocumented)
         readonly minimise: string;
+        // (undocumented)
+        readonly pin: false | string;
         // (undocumented)
         readonly popout: false | string;
         // (undocumented)
@@ -1888,12 +1911,14 @@ export class Stack extends ComponentParentableItem {
     addComponent(componentType: JsonValue, componentState?: JsonValue, title?: string, index?: number): number;
     // (undocumented)
     addItem(itemConfig: ComponentItemConfig, index?: number): number;
+    attachChild(detached: Stack.DetachedComponent, index?: number): void;
     // (undocumented)
     get childElementContainer(): HTMLElement;
     // @internal (undocumented)
     get contentAreaDimensions(): Stack.ContentAreaDimensions | undefined;
     // @internal (undocumented)
     destroy(): void;
+    detachChild(componentItem: ComponentItem): Stack.DetachedComponent;
     // @internal (undocumented)
     focusActiveContentItem(): void;
     // (undocumented)
@@ -1964,6 +1989,14 @@ export namespace Stack {
     export type ContentAreaDimensions = {
         [segment: string]: ContentAreaDimension;
     };
+    export interface DetachedComponent {
+        // (undocumented)
+        readonly componentItem: ComponentItem;
+        // (undocumented)
+        readonly config: ResolvedComponentItemConfig;
+        // (undocumented)
+        readonly element: HTMLElement;
+    }
     // @internal (undocumented)
     export const enum Segment {
         // (undocumented)
